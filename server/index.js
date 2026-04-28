@@ -11,15 +11,19 @@ const incidentRoutes = require('./routes/incidents');
 const app = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = process.env.CLIENT_URL
+  ? [process.env.CLIENT_URL, 'http://localhost:5173']
+  : ['http://localhost:5173'];
+
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST', 'PATCH'],
   },
 });
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(cors({ origin: ALLOWED_ORIGINS }));
 app.use(express.json());
 
 // Attach io to every request so routes can emit events
